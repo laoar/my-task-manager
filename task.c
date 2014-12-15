@@ -9,7 +9,7 @@ TAILQ_HEAD(, pid_hit_list) hit_header;
 
 struct task_control ctask;
 
-int  get_allproc(struct allpid *pids)
+int get_allproc(struct allpid *pids)
 {
 	int cnt;
 	int *pid_buffer;
@@ -33,6 +33,8 @@ int  get_allproc(struct allpid *pids)
 
    pids->pid_list = pid_buffer;
    pids->cnt = cnt;
+
+   return 0;
 }
 
 /*
@@ -61,7 +63,7 @@ int get_pidinfo(pid_t pid, struct proc_taskallinfo *task_info)
 		perror("proc_pidinfo");
 		retval =  -1;
 	} else if(retval < sizeof(task_info)){
-		printf("retval %d less than expected size %d\n", retval, sizeof(struct proc_taskallinfo));
+		printf("retval %d less than expected size %lu\n", retval, sizeof(struct proc_taskallinfo));
 		retval =  -1;
 	}	
 
@@ -116,6 +118,8 @@ int pid_hit_list_init(char *task_name)
 		//var->last_update.tv_usec = 0;
 	}
 	gettimeofday(&ctask.cputime, NULL);
+
+	return 0;
 }
 
 int task_manage(double limit)
@@ -171,6 +175,8 @@ int task_manage(double limit)
 
 	ctask.task_time = task_time;
 	memcpy(&ctask.cputime, &now, sizeof(struct timeval));
+	
+	return 0;
 }
 
 
@@ -185,7 +191,7 @@ void inc_nice(void)
 	}
 
 	if (nice != old_nice - 1) {
-		printf("control process priority : %d old:%d\n", nice, old_nice);
+		printf("control process priority : %d old:%d\n", getpriority(PRIO_PROCESS, 0), old_nice);
 	} else {
 		printf("pls. use root to change the priority!\n");
 	}
